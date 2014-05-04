@@ -569,9 +569,9 @@ static bool get_work(struct thr_info *thr, struct work *work)
 	if (opt_benchmark) {
 		memset(work->data, 0x55, 76);
 		work->data[17] = swab32(time(NULL));
-		memset(work->data + 19, 0x00, 52);
-		work->data[20] = 0x80000000;
-		work->data[31] = 0x00000280;
+		memset(work->data + 19, 0x00, 60);
+		work->data[22] = 0x80000000;
+		work->data[31] = 0x000002c0;
 		memset(work->target, 0x00, sizeof(work->target));
 		return true;
 	}
@@ -662,8 +662,10 @@ static void stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 		work->data[9 + i] = be32dec((uint32_t *)merkle_root + i);
 	work->data[17] = le32dec(sctx->job.ntime);
 	work->data[18] = le32dec(sctx->job.nbits);
-	work->data[20] = 0x80000000;
-	work->data[31] = 0x00000280;
+	work->data[20] = 0x0; // reserved 1
+	work->data[21] = 0x0; // reserved 2
+	work->data[22] = 0x80000000;
+	work->data[31] = 0x000002c0;
 
 	pthread_mutex_unlock(&sctx->work_lock);
 
